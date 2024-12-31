@@ -7,22 +7,28 @@ import Login from "./login";
 import SignUp from "./signup";
 
 const Navbar = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
   const [isLoginOpen, setLoginIsOpen] = useState(false);
   const [isSignupOpen, setSignupIsOpen] = useState(false);
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUsername("");
+    localStorage.removeItem("token");
+  };
+
   return (
     <div className="relative">
-      {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-[#6B0000] p-4">
         <div className="container mx-auto flex items-center justify-between">
-          {/* Logo */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             className="text-white text-xl font-bold px-6"
           >
-            <Link href="#">eBaca</Link>
+            <Link href="/">eBaca</Link>
           </motion.div>
 
           <div className="flex space-x-8">
@@ -43,27 +49,48 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Buttons */}
           <div className="hidden md:flex space-x-4">
-            <motion.button
-              className="bg-[#B30000] text-white text-sm px-4 py-2 rounded-md"
-              whileHover={{ scale: 1.1 }}
-              onClick={() => setLoginIsOpen(true)}
-            >
-              Masuk
-            </motion.button>
-            <motion.button
-              className="bg-[#FF0000] text-white text-sm px-4 py-2 rounded-md"
-              whileHover={{ scale: 1.1 }}
-              onClick={() => setSignupIsOpen(true)}
-            >
-              Daftar
-            </motion.button>
+            {!isLoggedIn ? (
+              <>
+                <motion.button
+                  className="bg-[#B30000] text-white text-sm px-4 py-2 rounded-md"
+                  whileHover={{ scale: 1.1 }}
+                  onClick={() => setLoginIsOpen(true)}
+                >
+                  Masuk
+                </motion.button>
+
+                <motion.button
+                  className="bg-[#FF0000] text-white text-sm px-4 py-2 rounded-md"
+                  whileHover={{ scale: 1.1 }}
+                  onClick={() => setSignupIsOpen(true)}
+                >
+                  Daftar
+                </motion.button>
+              </>
+            ) : (
+              <>
+                <motion.div
+                  className="text-white text-lg font-semibold"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  Halo, {username}!
+                </motion.div>
+
+                <motion.button
+                  className="bg-gray-700 text-white text-sm px-4 py-2 rounded-md"
+                  whileHover={{ scale: 1.1 }}
+                  onClick={handleLogout}
+                >
+                  Keluar
+                </motion.button>
+              </>
+            )}
           </div>
         </div>
       </nav>
 
-      {/* Modals */}
       <Login
         isLoginOpen={isLoginOpen}
         onClose={() => setLoginIsOpen(false)}
@@ -71,7 +98,12 @@ const Navbar = () => {
           setLoginIsOpen(false);
           setSignupIsOpen(true);
         }}
+        onLoginSuccess={(username) => {
+          setUsername(username);
+          setIsLoggedIn(true);
+        }}
       />
+
       <SignUp
         isSignupOpen={isSignupOpen}
         onClose={() => setSignupIsOpen(false)}

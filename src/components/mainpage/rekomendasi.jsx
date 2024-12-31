@@ -1,40 +1,52 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function RekomendasiBuku() {
+  const router = useRouter();
+
   const buku = [
     {
+      detail: "matematika-dalam-al-quran",
       title: "Matematika dalam Al-Qur'an",
       category: "Matematika",
       image: "/bukumtk.svg",
     },
     {
+      detail: "ensiklopedia-sains",
       title: "Ensiklopedia SAINS",
       category: "Sains",
       image: "/bukusains.svg",
     },
     {
+      detail: "isu-sosial-yang-berserak",
       title: "Isu Sosial yang Berserak",
       category: "Sosial",
       image: "/bukusosial.svg",
     },
     {
+      detail: "komputer-dan-masyarakat",
       title: "Komputer & Masyarakat",
       category: "Teknologi",
       image: "/bukutech.svg",
     },
     {
+      detail: "bumi-manusia",
       title: "BUMI MANUSIA",
       category: "Sastra",
       image: "/bukusastra.svg",
     },
     {
+      detail: "the-intelligent-investor",
       title: "The Intelligent Investor",
       category: "Ekonomi",
       image: "/bukuekonomi.svg",
     },
   ];
+
+  const handleDetailClick = (detail) => {
+    router.push(`/detailpage/${detail}`);
+  };
 
   return (
     <div className="min-h-screen bg-[url('/bgrekomen.svg')] bg-cover bg-center flex flex-col justify-center items-center">
@@ -62,7 +74,10 @@ export default function RekomendasiBuku() {
               <h3 className="mt-4 text-black w-full text-md text-center font-semibold min-h-[3rem]">
                 {buku.title}
               </h3>
-              <button className="mt-4 bg-[#9A0000] text-white w-48 py-1 rounded-full hover:bg-red-700">
+              <button
+                onClick={() => handleDetailClick(buku.detail)}
+                className="mt-4 bg-[#9A0000] text-white w-48 py-1 rounded-full hover:bg-red-700"
+              >
                 Detail
               </button>
             </div>
