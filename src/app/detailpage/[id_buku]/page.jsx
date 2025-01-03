@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Navbar from "@/src/components/mainpage/navbar";
+
 export default function DetailBuku() {
-  const { id_buku } = useParams(); // Mengambil parameter dynamic 'id_buku' dari URL
+  const { id_buku } = useParams();
   const router = useRouter();
 
   const [bukuTerpilih, setBukuTerpilih] = useState(null);
@@ -37,6 +38,20 @@ export default function DetailBuku() {
     fetchBukuDetail();
   }, [id_buku]);
 
+  const handleDownload = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Silakan login terlebih dahulu untuk mendownload buku.");
+      router.push("");
+      return;
+    }
+    const link = document.createElement("a");
+    link.href = bukuTerpilih.sumber;
+    link.download = bukuTerpilih.judul;
+    link.click();
+  };
+
   if (loading) {
     return <div className="text-center py-20">Memuat detail buku...</div>;
   }
@@ -47,7 +62,7 @@ export default function DetailBuku() {
         <p>{error || "Buku tidak ditemukan"}</p>
         <button
           className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 mt-4"
-          onClick={() => router.push("/")}
+          onClick={() => router.push("")}
         >
           Kembali ke Beranda
         </button>
@@ -127,9 +142,8 @@ export default function DetailBuku() {
               </div>
 
               <div className="flex gap-4 mt-10 justify-end">
-                <a
-                  href={bukuTerpilih.sumber}
-                  download
+                <button
+                  onClick={handleDownload}
                   className="bg-gray-900 text-white px-6 py-2 rounded-lg shadow hover:bg-gray-700 flex items-center gap-2"
                 >
                   <span>Download</span>
@@ -147,9 +161,9 @@ export default function DetailBuku() {
                       d="M3 16.5V21h18v-4.5M12 3v12m6-6-6 6m0 0-6-6"
                     />
                   </svg>
-                </a>
+                </button>
                 <a
-                  href={bukuTerpilih.sumber} // Link untuk membaca buku
+                  href={bukuTerpilih.sumber}
                   target="_blank"
                   className="bg-red-600 text-white px-6 py-2 rounded-lg shadow hover:bg-red-700 flex items-center gap-2"
                 >

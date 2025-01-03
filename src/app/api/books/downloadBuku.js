@@ -1,29 +1,33 @@
-import { authMiddleware } from "../../../middleware/authMiddleware";
-import fs from "fs";
-import path from "path";
+import jwt from "jsonwebtoken";
+import { dbBooks } from "../../../db";
 
-export async function GET(req, res) {
-  authMiddleware(req, res, async () => {
-    const { id_buku } = req.query;
+export async function GET(req, { params }) {
+  const { id_buku } = params;
+  const token = req.headers.get("authorization")?.split(" ")[1];
 
-    // Periksa apakah id_buku ada
-    if (!id_buku) {
-      return res.status(400).json({ message: "ID buku tidak ditemukan" });
+  if (!token) {
+    return new Response("Login diperlukan untuk mendownload buku.", {
+      status: 401,
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const [book] = await dbBooks.query("SELECT * FROM buku WHERE id_buku = ?", [
+      id_buku,
+    ]);
+
+    if (!book) {
+      return new Response("Buku tidak ditemukan", { status: 404 });
     }
 
-    // Logika untuk mencari file buku berdasarkan id_buku
-    const filePath = path.join(__dirname, `/path/to/your/files/${id_buku}.pdf`);
-
-    try {
-      if (fs.existsSync(filePath)) {
-        res.download(filePath); // Kirim file untuk diunduh
-      } else {
-        res.status(404).json({ message: "Buku tidak ditemukan" });
-      }
-    } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Terjadi kesalahan saat mengunduh buku" });
-    }
-  });
+    return new Response(JSON.stringify({ fileUrl: book[0].sumber }), {
+      status: 200,
+    });
+  } catch (error) {
+    return new Response("Token tidak valid atau sudah kedaluwarsa.", {
+      status: 401,
+    });
+  }
 }

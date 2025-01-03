@@ -35,8 +35,8 @@ export default function SignUp({ isSignupOpen, onClose, onSwitchToLogin }) {
 
       if (response.ok) {
         const data = await response.json();
-        alert(data.message); // Menampilkan pesan sukses
-        onClose(); // Menutup modal setelah berhasil
+        alert(data.message);
+        onClose();
       } else {
         const error = await response.json();
         setErrorMessage(error.message);

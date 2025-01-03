@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Login from "./login";
 import SignUp from "./signup";
 
@@ -12,10 +12,21 @@ const Navbar = () => {
   const [isLoginOpen, setLoginIsOpen] = useState(false);
   const [isSignupOpen, setSignupIsOpen] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedUsername = localStorage.getItem("username");
+
+    if (token && storedUsername) {
+      setIsLoggedIn(true);
+      setUsername(storedUsername);
+    }
+  }, []);
+
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUsername("");
     localStorage.removeItem("token");
+    localStorage.removeItem("username");
   };
 
   return (
@@ -101,6 +112,8 @@ const Navbar = () => {
         onLoginSuccess={(username) => {
           setUsername(username);
           setIsLoggedIn(true);
+          localStorage.setItem("token", "dummyToken");
+          localStorage.setItem("username", username);
         }}
       />
 

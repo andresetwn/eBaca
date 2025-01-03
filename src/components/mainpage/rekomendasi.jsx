@@ -10,18 +10,16 @@ export default function RekomendasiBuku() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Ambil data buku dari API (dari database)
     const fetchBuku = async () => {
       try {
-        const response = await fetch("/api/books"); // Pastikan endpoint ini benar
+        const response = await fetch("/api/books");
         if (!response.ok) {
           throw new Error("Gagal mengambil data buku");
         }
         const data = await response.json();
 
-        // Filter buku hanya satu untuk setiap kategori
         const bukuPerKategori = [];
-        const kategoriSet = new Set(); // Set untuk memastikan hanya satu buku per kategori
+        const kategoriSet = new Set();
 
         data.forEach((bukuItem) => {
           if (!kategoriSet.has(bukuItem.kategori)) {
@@ -30,7 +28,7 @@ export default function RekomendasiBuku() {
           }
         });
 
-        setBuku(bukuPerKategori); // Menyimpan buku yang sudah difilter
+        setBuku(bukuPerKategori);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -80,7 +78,7 @@ export default function RekomendasiBuku() {
                 {bukuItem.judul}
               </h3>
               <button
-                onClick={() => router.push(`/detailpage/${bukuItem.id_buku}`)} // Navigasi ke detail buku berdasarkan id_buku
+                onClick={() => router.push(`/detailpage/${bukuItem.id_buku}`)}
                 className="mt-4 bg-[#9A0000] text-white w-48 py-1 rounded-full hover:bg-red-700"
               >
                 Detail

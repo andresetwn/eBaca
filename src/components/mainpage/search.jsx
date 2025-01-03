@@ -9,11 +9,10 @@ export default function Search() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(null); // Track the selected category
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const router = useRouter();
 
-  // Daftar kategori
   const categories = [
     { name: "Teknologi", icon: "💻", bg: "/tech.svg" },
     { name: "Matematika", icon: "➗", bg: "/mtk.svg" },
@@ -23,7 +22,6 @@ export default function Search() {
     { name: "Ekonomi", icon: "⚙️", bg: "/ekonomi.svg" },
   ];
 
-  // Fungsi untuk mengambil data buku berdasarkan input pencarian
   const handleSearch = async () => {
     setLoading(true);
     setError(null);
@@ -44,11 +42,10 @@ export default function Search() {
     }
   };
 
-  // Fungsi untuk mengambil buku berdasarkan kategori
   const handleCategoryClick = async (category) => {
     setLoading(true);
     setError(null);
-    setSelectedCategory(category); // Set the selected category
+    setSelectedCategory(category);
 
     try {
       const response = await fetch(
@@ -66,7 +63,6 @@ export default function Search() {
     }
   };
 
-  // Fungsi untuk navigasi ke detail buku
   const handleDetailClick = (id_buku) => {
     router.push(`/detailpage/${id_buku}`);
   };
@@ -103,7 +99,7 @@ export default function Search() {
             <div
               key={index}
               className="bg-[#E9E4E6] h-[23rem] shadow-lg rounded-lg w-60 px-2 py-4 flex flex-col items-center relative cursor-pointer transform transition-all duration-500"
-              onClick={() => handleDetailClick(buku.id_buku)} // Navigasi menggunakan id_buku
+              onClick={() => handleDetailClick(buku.id_buku)}
             >
               {buku.cover ? (
                 <Image
@@ -129,7 +125,7 @@ export default function Search() {
                   {buku.judul}
                 </h3>
                 <button
-                  onClick={() => handleDetailClick(buku.id_buku)} // Navigasi menggunakan id_buku
+                  onClick={() => handleDetailClick(buku.id_buku)}
                   className="mt-4 bg-[#9A0000] text-white w-48 py-1 rounded-full hover:bg-red-700"
                 >
                   Detail

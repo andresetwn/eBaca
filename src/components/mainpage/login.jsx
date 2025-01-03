@@ -37,7 +37,8 @@ export default function Login({
         localStorage.setItem("token", data.token);
         onLoginSuccess(username);
         onClose();
-        router.push("/");
+
+        router.push("");
       } else {
         const errorData = await response.json();
         setMessage(errorData.message || "Login gagal. Coba lagi.");
