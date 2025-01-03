@@ -3,6 +3,7 @@ import Navbar from "../components/mainpage/navbar";
 import Home from "../components/mainpage/home";
 import Search from "../components/mainpage/search";
 import RekomendasiBuku from "../components/mainpage/rekomendasi";
+import Footer from "../components/mainpage/footer";
 
 export default function Main() {
   return (
@@ -18,6 +19,7 @@ export default function Main() {
         <section id="rekomendasi">
           <RekomendasiBuku />
         </section>
+        <Footer />
       </main>
     </div>
   );

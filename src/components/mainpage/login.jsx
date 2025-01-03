@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Login({
   isLoginOpen,
@@ -13,6 +14,8 @@ export default function Login({
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -34,6 +37,7 @@ export default function Login({
         localStorage.setItem("token", data.token);
         onLoginSuccess(username);
         onClose();
+        router.push("/");
       } else {
         const errorData = await response.json();
         setMessage(errorData.message || "Login gagal. Coba lagi.");
