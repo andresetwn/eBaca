@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Navbar from "../components/mainpage/navbar";
 import Home from "../components/mainpage/home";
 import Search from "../components/mainpage/search";

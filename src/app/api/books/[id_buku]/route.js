@@ -1,10 +1,9 @@
 import { dbBooks } from "../../../db";
-import { middleware } from "@/src/app/middleware/auth";
+
 export async function GET(req, { params }) {
   const { id_buku } = params;
 
   try {
-    await middleware(req);
     const [rows] = await dbBooks.query("SELECT * FROM buku WHERE id_buku = ?", [
       id_buku,
     ]);

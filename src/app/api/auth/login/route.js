@@ -1,24 +1,17 @@
 import { dbUsers } from "../../../db";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose"; // Import jose untuk membuat token
 
 export async function POST(req) {
   try {
     const { username, password } = await req.json();
 
-    if (!username || !password) {
-      return new Response(
-        JSON.stringify({
-          message: "Nama pengguna dan kata sandi wajib diisi.",
-        }),
-        { status: 400 }
-      );
-    }
-
+    // Cari pengguna berdasarkan username
     const [users] = await dbUsers.query(
       "SELECT * FROM pengguna WHERE username = ?",
       [username]
     );
+
     if (users.length === 0) {
       return new Response(
         JSON.stringify({ message: "Nama pengguna atau kata sandi salah." }),
@@ -28,7 +21,9 @@ export async function POST(req) {
 
     const user = users[0];
 
+    // Verifikasi kata sandi
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
     if (!isPasswordValid) {
       return new Response(
         JSON.stringify({ message: "Nama pengguna atau kata sandi salah." }),
@@ -36,12 +31,16 @@ export async function POST(req) {
       );
     }
 
-    const token = jwt.sign(
-      { id: user.id, username: user.username },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    // Buat token menggunakan jose
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET); // Gunakan TextEncoder untuk encoding
+    const token = await new SignJWT({ id: user.id, username: user.username }) // Payload token
+      .setProtectedHeader({ alg: "HS256" }) // Header
+      .setExpirationTime("1h") // Waktu kadaluwarsa
+      .sign(secret); // Tandatangani token dengan secret
 
+    console.log("Token yang dibuat:", token);
+
+    // Berikan respons sukses
     return new Response(
       JSON.stringify({
         message: "Login berhasil!",
@@ -50,12 +49,9 @@ export async function POST(req) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Kesalahan pada saat login:", error);
+    console.error("Kesalahan saat login:", error);
     return new Response(
-      JSON.stringify({
-        message: "Terjadi kesalahan server.",
-        detail: error.message,
-      }),
+      JSON.stringify({ message: "Terjadi kesalahan server." }),
       { status: 500 }
     );
   }

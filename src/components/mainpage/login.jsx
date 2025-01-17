@@ -2,7 +2,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Login({
   isLoginOpen,
@@ -14,8 +13,6 @@ export default function Login({
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -33,15 +30,24 @@ export default function Login({
 
       if (response.ok) {
         const data = await response.json();
-        setMessage("Login berhasil!");
-        localStorage.setItem("token", data.token);
-        onLoginSuccess(username);
-        onClose();
+        console.log("Token yang diterima:", data.token); // Log token yang diterima dari backend
 
-        router.push("");
+        if (data.token) {
+          localStorage.setItem("token", data.token); // Simpan token ke localStorage
+          console.log(
+            "Token yang disimpan di localStorage:",
+            localStorage.getItem("token")
+          );
+          onLoginSuccess(username); // Panggil callback untuk menyimpan username
+          setMessage("Login berhasil!");
+          onClose(); // Tutup modal login
+        } else {
+          setMessage("Login berhasil, tetapi token tidak diterima.");
+        }
       } else {
         const errorData = await response.json();
         setMessage(errorData.message || "Login gagal. Coba lagi.");
+        console.error("Error login:", errorData);
       }
     } catch (error) {
       setMessage("Terjadi kesalahan. Silakan coba lagi.");
