@@ -137,7 +137,7 @@ export default function DetailBuku() {
 
                 <div className="text-base text-gray-700 leading-relaxed">
                   <strong className="font-bold">Sinopsis:</strong>
-                  <p className="mt-2">{bukuTerpilih.sinopsis}</p>
+                  <p className="mt-2 text-justify">{bukuTerpilih.sinopsis}</p>
                 </div>
               </div>
 
